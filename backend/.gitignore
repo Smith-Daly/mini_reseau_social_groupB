@@ -1,0 +1,18 @@
+# ---------- Python (backend) ----------
+__pycache__/
+*.py[cod]
+*.egg-info/
+venv/
+.venv/
+*.db
+.pytest_cache/
+
+
+# ---------- Éditeur / OS ----------
+.DS_Store
+.vscode/
+.idea/
+*.pem
+
+# agent
+.claude

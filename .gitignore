@@ -1,0 +1,30 @@
+# ---------- Python (backend) ----------
+__pycache__/
+*.py[cod]
+*.egg-info/
+venv/
+.venv/
+*.db
+.pytest_cache/
+
+# ---------- Node / Next.js (frontend) ----------
+node_modules/
+.next/
+out/
+build/
+.env*.local
+.vercel
+*.tsbuildinfo
+next-env.d.ts
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ---------- Éditeur / OS ----------
+.DS_Store
+.vscode/
+.idea/
+*.pem
+
+# agent
+.claude
