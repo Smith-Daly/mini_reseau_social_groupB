@@ -139,7 +139,34 @@ export default function PageDetailPost() {
       )}
 
       {/* Formulaire d'ajout de commentaire */}
-     
+     <form
+        onSubmit={gererAjout}
+        className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 space-y-3"
+      >
+        <h2 className="font-semibold text-gray-700 dark:text-gray-200">Ajouter un commentaire</h2>
+        <input
+          type="text"
+          placeholder="Votre pseudo"
+          value={pseudo}
+          onChange={(e) => setPseudo(e.target.value)}
+          className="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:placeholder-gray-500 rounded px-3 py-2 text-sm"
+        />
+        <textarea
+          placeholder="Votre commentaire"
+          value={contenu}
+          onChange={(e) => setContenu(e.target.value)}
+          className="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:placeholder-gray-500 rounded px-3 py-2 text-sm"
+          rows={2}
+        />
+        <button
+          type="submit"
+          disabled={envoiEnCours}
+          className="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded text-sm font-medium disabled:opacity-50"
+        >
+          <Send className="w-4 h-4" />
+          {envoiEnCours ? "Envoi..." : "Commenter"}
+        </button>
+      </form>
 
       {/* Liste des commentaires */}
       
