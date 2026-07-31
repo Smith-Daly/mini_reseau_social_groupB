@@ -12,7 +12,17 @@ export interface PostAvecCompteur extends Post {
   nombre_commentaires: number;
 }
 
-export type PostDetail = Post;
+export interface Commentaire {
+  id: number;
+  post_id: number;
+  pseudo: string;
+  contenu: string;
+  date: string;
+}
+
+export interface PostDetail extends Post {
+  commentaires: Commentaire[];
+}
 
 async function traiterReponse(res: Response) {
   if (!res.ok) {
@@ -64,5 +74,40 @@ export async function modifierPost(
 
 export async function supprimerPost(id: number) {
   const res = await fetch(`${API_URL}/posts/${id}`, { method: "DELETE" });
+  return traiterReponse(res);
+}
+
+// ---------- Commentaires ----------
+
+export async function getCommentaires(postId: number): Promise<Commentaire[]> {
+  const res = await fetch(`${API_URL}/posts/${postId}/commentaires`, {
+    cache: "no-store",
+  });
+  return traiterReponse(res);
+}
+
+export async function ajouterCommentaire(postId: number, pseudo: string, contenu: string) {
+  const res = await fetch(`${API_URL}/posts/${postId}/commentaires`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ pseudo, contenu }),
+  });
+  return traiterReponse(res);
+}
+
+export async function modifierCommentaire(
+  id: number,
+  data: Partial<{ pseudo: string; contenu: string }>
+) {
+  const res = await fetch(`${API_URL}/commentaires/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  return traiterReponse(res);
+}
+
+export async function supprimerCommentaire(id: number) {
+  const res = await fetch(`${API_URL}/commentaires/${id}`, { method: "DELETE" });
   return traiterReponse(res);
 }

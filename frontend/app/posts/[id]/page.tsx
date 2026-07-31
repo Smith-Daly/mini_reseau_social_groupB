@@ -3,8 +3,16 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
-import { PostDetail, getPost } from "../../lib/api";
+import { toast } from "sonner";
+import { ArrowLeft, Pencil, Send, Trash2 } from "lucide-react";
+import {
+  PostDetail,
+  Commentaire,
+  getPost,
+  ajouterCommentaire,
+  modifierCommentaire,
+  supprimerCommentaire,
+} from "../../lib/api";
 
 export default function PageDetailPost() {
   const params = useParams();
@@ -14,6 +22,13 @@ export default function PageDetailPost() {
   const [post, setPost] = useState<PostDetail | null>(null);
   const [chargement, setChargement] = useState(true);
   const [erreur, setErreur] = useState("");
+
+  const [pseudo, setPseudo] = useState("");
+  const [contenu, setContenu] = useState("");
+  const [envoiEnCours, setEnvoiEnCours] = useState(false);
+
+  const [idEnEdition, setIdEnEdition] = useState<number | null>(null);
+  const [editContenu, setEditContenu] = useState("");
 
   async function chargerPost() {
     setChargement(true);
@@ -31,6 +46,53 @@ export default function PageDetailPost() {
   useEffect(() => {
     if (!Number.isNaN(postId)) chargerPost();
   }, [postId]);
+
+  async function gererAjout(e: React.FormEvent) {
+    e.preventDefault();
+    if (!pseudo.trim() || !contenu.trim()) {
+      setErreur("Le pseudo et le contenu sont obligatoires");
+      return;
+    }
+    setEnvoiEnCours(true);
+    try {
+      await ajouterCommentaire(postId, pseudo, contenu);
+      setPseudo("");
+      setContenu("");
+      setErreur("");
+      await chargerPost();
+    } catch (e: any) {
+      setErreur(e.message);
+    } finally {
+      setEnvoiEnCours(false);
+    }
+  }
+
+  function commencerEdition(c: Commentaire) {
+    setIdEnEdition(c.id);
+    setEditContenu(c.contenu);
+  }
+
+  async function sauvegarderEdition(id: number) {
+    if (!editContenu.trim()) return;
+    try {
+      await modifierCommentaire(id, { contenu: editContenu });
+      setIdEnEdition(null);
+      await chargerPost();
+    } catch (e: any) {
+      setErreur(e.message);
+    }
+  }
+
+  async function gererSuppression(id: number) {
+    if (!confirm("Supprimer ce commentaire ?")) return;
+    try {
+      await supprimerCommentaire(id);
+      await chargerPost();
+      toast.success("Commentaire supprimé avec succès");
+    } catch (e: any) {
+      toast.error(e.message || "Impossible de supprimer le commentaire");
+    }
+  }
 
   if (chargement)
     return <p className="text-gray-500 dark:text-gray-400 text-center">Chargement...</p>;
@@ -75,6 +137,12 @@ export default function PageDetailPost() {
           {erreur}
         </div>
       )}
+
+      {/* Formulaire d'ajout de commentaire */}
+     
+
+      {/* Liste des commentaires */}
+      
     </div>
   );
 }
