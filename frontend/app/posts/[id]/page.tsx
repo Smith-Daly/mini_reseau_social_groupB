@@ -169,6 +169,77 @@ export default function PageDetailPost() {
       </form>
 
       {/* Liste des commentaires */}
+      <div className="space-y-3">
+        <h2 className="font-semibold text-gray-700 dark:text-gray-200">
+          {post.commentaires.length} commentaire
+          {post.commentaires.length !== 1 ? "s" : ""}
+        </h2>
+        {post.commentaires.length === 0 ? (
+          <p className="text-gray-500 dark:text-gray-400 text-sm">
+            Aucun commentaire pour l'instant.
+          </p>
+        ) : (
+          post.commentaires.map((c) => (
+            <div key={c.id} className="bg-white dark:bg-gray-800 rounded-lg shadow p-3">
+              <div className="flex justify-between items-start">
+                <div>
+                  <p className="font-medium text-gray-800 dark:text-gray-100 text-sm">
+                    {c.pseudo}
+                  </p>
+                  <p className="text-xs text-gray-400 dark:text-gray-500">
+                    {new Date(c.date).toLocaleString("fr-FR")}
+                  </p>
+                </div>
+                <div className="flex gap-3 text-xs">
+                  <button
+                    onClick={() => commencerEdition(c)}
+                    className="flex items-center gap-1 text-indigo-600 dark:text-indigo-400 hover:underline"
+                  >
+                    <Pencil className="w-3.5 h-3.5" />
+                    Modifier
+                  </button>
+                  <button
+                    onClick={() => gererSuppression(c.id)}
+                    className="flex items-center gap-1 text-red-600 dark:text-red-400 hover:underline"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    Supprimer
+                  </button>
+                </div>
+              </div>
+
+              {idEnEdition === c.id ? (
+                <div className="mt-2 space-y-2">
+                  <textarea
+                    value={editContenu}
+                    onChange={(e) => setEditContenu(e.target.value)}
+                    className="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 rounded px-3 py-2 text-sm"
+                    rows={2}
+                  />
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => sauvegarderEdition(c.id)}
+                      className="bg-primary text-white px-3 py-1 rounded text-sm"
+                    >
+                      Enregistrer
+                    </button>
+                    <button
+                      onClick={() => setIdEnEdition(null)}
+                      className="text-gray-500 dark:text-gray-400 text-sm"
+                    >
+                      Annuler
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <p className="mt-1 text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
+                  {c.contenu}
+                </p>
+              )}
+            </div>
+          ))
+        )}
+      </div>
       
     </div>
   );
